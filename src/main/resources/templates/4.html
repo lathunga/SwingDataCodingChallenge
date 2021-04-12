@@ -1,0 +1,22 @@
+<form method="POST" th:action="@{/4}">
+<select id="select" name="data">    
+        	<option value="0">Select Data Column</option>                                        
+            <option value="1">timestamp</option>
+            <option value="2">ax</option>
+            <option value="3">ay</option>
+            <option value="4">az</option>
+            <option value="5">wx</option>
+            <option value="6">wy</option>
+            <option value="7">wz</option>
+        </select> <br><br>
+<label for="indexBegin">indexBegin:</label>
+<input type="text" name="indexBegin" id="indexBegin"><br><br>
+<label for="indexEnd">indexEnd:</label>
+<input type="text" name="indexEnd" id="indexEnd"><br><br>
+<label for="thresholdLo">thresholdLo:</label>
+<input type="text" name="thresholdLo" id="thresholdLo"><br><br>
+<label for="thresholdHi">thresholdHi:</label>
+<input type="text" name="thresholdHi" id="thresholdHi"><br><br>
+<label for="winLength">winLength:</label>
+<input type="text" name="winLength" id="winLength"><br><br>
+<input type="submit" value="Submit">

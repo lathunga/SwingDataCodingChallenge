@@ -1,0 +1,7 @@
+  <tr th:each="data, iterstat: ${result}">
+  	[
+     <td th:text="${data[0]}" th:id="|td${iterstat.index}|"></td>
+     , 
+     <td th:text="${data[1]}" th:id="|td${iterstat.index}|"></td>
+     ] 
+  </tr>
