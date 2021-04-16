@@ -108,18 +108,12 @@ public class CSVController {
 		int i = indexBegin;
 		while(indexEnd-i>=winLength-1)
 		{
-			int j = i;
-			int count = 0;
-			while(data.get(j)>threshold && count<winLength)
-			{
-				count++;
-				j++;
-			}
-			if(count==winLength)
+			int j = searchHelper(data, i, threshold, Integer.MAX_VALUE, winLength, false);
+			if(j-i==winLength)
 			{
 				return i;
 			}
-			i++;
+			i=j+1;
 		}
 		return -1;
 	}
@@ -127,20 +121,14 @@ public class CSVController {
 	public static int backSearchContinuityWithinRange(ArrayList<Double> data, int indexBegin, int indexEnd, double thresholdLo, double thresholdHi, int winLength)
 	{
 		int i = indexEnd;
-		while(indexBegin-i>=winLength-1)
+		while(i-indexBegin>=winLength-1)
 		{
-			int j = i;
-			int count = 0;
-			while(data.get(j)>thresholdLo && data.get(j)<thresholdHi && count<winLength)
-			{
-				count++;
-				j++;
-			}
-			if(count==winLength)
+			int j = searchHelper(data, i, thresholdLo, thresholdHi, winLength, true);
+			if(i-j==winLength)
 			{
 				return i;
 			}
-			i++;
+			i=j-1;
 		}
 		return -1;
 	}
@@ -151,17 +139,15 @@ public class CSVController {
 		while(indexEnd-i>=winLength-1)
 		{
 			int j = i;
-			int count = 0;
-			while(data1.get(j)>threshold1 && data2.get(j)>threshold2 && count<winLength)
+			while(data1.get(j)>threshold1 && data2.get(j)>threshold2 && j-i<winLength)
 			{
-				count++;
 				j++;
 			}
-			if(count==winLength)
+			if(j-i==winLength)
 			{
 				return i;
 			}
-			i++;
+			i=j+1;
 		}
 		return -1;
 	}
@@ -172,55 +158,32 @@ public class CSVController {
 		int i = indexBegin;
 		while(indexEnd-i>=winLength-1)
 		{
-			int j = i;
-			int count = 0;
-			while(data.get(j)>thresholdLo && data.get(j)<thresholdHi && count<winLength)
-			{
-				count++;
-				j++;
-			}
-			if(count==winLength)
+			int j = searchHelper(data, i, thresholdLo, thresholdHi, Integer.MAX_VALUE, false);
+			if(j-i>=winLength)
 			{
 				int[] newIndexes = {i, j-1};
 				indexes.add(newIndexes);
 			}
-			i = j+1;
+			i=j+1;
 		}
 		return indexes;
 	}
 	
-	public static int searchHelper(ArrayList<ArrayList<Double>> data, int indexBegin, int indexEnd, double[] thresholdLo, double thresholdHi, int winLength)
+	public static int searchHelper(ArrayList<Double> data, int indexBegin, double thresholdLo, double thresholdHi, int winLength, boolean isBackwards)
 	{
-		for(int i = indexBegin; indexEnd-i>=winLength-1; i++)
+		int i = indexBegin;
+		while(data.get(indexBegin)>thresholdLo && data.get(indexBegin)<thresholdHi && Math.abs(indexBegin-i)<winLength)
 		{
-			boolean check = true;
-			int k;
-			for(k = i; check; k++)
+			if(isBackwards)
 			{
-				int j;
-				for(j = 0; j<data.size(); j++)
-				{
-					if(!(data.get(j).get(i)>thresholdLo[j]) || !(data.get(j).get(i)<thresholdHi))
-					{
-						break;
-					}
-				}
-				if(j!=data.size())
-				{
-					check=false;
-					k++;
-				}
-				else
-				{
-					if(k+1-i==winLength)
-					{
-						return i;
-					}
-				}
-			}	
-			i=k;
+				indexBegin--;
+			}
+			else
+			{
+				indexBegin++;
+			}
 		}
-		return -1;
+		return indexBegin;
 	}
 	
 }
