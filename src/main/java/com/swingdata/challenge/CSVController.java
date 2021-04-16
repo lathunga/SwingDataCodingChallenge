@@ -108,11 +108,9 @@ public class CSVController {
 	{
 		ArrayList<Double> thresholdLoArr = new ArrayList<Double>();
 		thresholdLoArr.add(threshold);
-		ArrayList<Double> thresholdHiArr = new ArrayList<Double>();
-		thresholdHiArr.add(Double.MAX_VALUE);
 		ArrayList<ArrayList<Double>> dataArr = new ArrayList<ArrayList<Double>>();
 		dataArr.add(data);
-		return searchHelper(dataArr, indexBegin, indexEnd, thresholdLoArr, thresholdHiArr, winLength);
+		return searchHelper(dataArr, indexBegin, indexEnd, thresholdLoArr, Double.MAX_VALUE, winLength);
 	}
 	
 	public static int backSearchContinuityWithinRange(ArrayList<Double> data, int indexBegin, int indexEnd, double thresholdLo, double thresholdHi, int winLength)
@@ -122,14 +120,15 @@ public class CSVController {
 		indexEnd = data.size()-1-indexEnd;
 		ArrayList<Double> thresholdLoArr = new ArrayList<Double>();
 		thresholdLoArr.add(thresholdLo);
-		ArrayList<Double> thresholdHiArr = new ArrayList<Double>();
-		thresholdHiArr.add(thresholdHi);
-		return data.size()-1-searchHelper(new ArrayList<ArrayList<Double>>(Arrays.asList(data)), indexBegin, indexEnd, thresholdLoArr, thresholdHiArr, winLength);
+		return data.size()-1-searchHelper(new ArrayList<ArrayList<Double>>(Arrays.asList(data)), indexBegin, indexEnd, thresholdLoArr, thresholdHi, winLength);
 	}
 			
 	public static int searchContinuityAboveValueTwoSignals(ArrayList<Double> data1, ArrayList<Double> data2, int indexBegin, int indexEnd, double threshold1, double threshold2, int winLength)
 	{
-		return searchHelperWithTwo(data1, data2, indexBegin, indexEnd, threshold1, threshold2, winLength);
+		ArrayList<Double> thresholdLoArr = new ArrayList<Double>();
+		thresholdLoArr.add(threshold1);
+		thresholdLoArr.add(threshold2);
+		return searchHelper(new ArrayList<ArrayList<Double>>(Arrays.asList(data1, data2)), indexBegin, indexEnd, thresholdLoArr, Double.MAX_VALUE, winLength);
 	}
 	
 	public static ArrayList<int[]> searchMultiContinuityWithinRange(ArrayList<Double> data, int indexBegin, int indexEnd, double thresholdLo, double thresholdHi, int winLength)
@@ -155,7 +154,7 @@ public class CSVController {
 		return indexes;
 	}
 	
-	public static int searchHelper(ArrayList<ArrayList<Double>> data, int indexBegin, int indexEnd, ArrayList<Double> thresholdLo, ArrayList<Double> thresholdHi, int winLength)
+	public static int searchHelper(ArrayList<ArrayList<Double>> data, int indexBegin, int indexEnd, ArrayList<Double> thresholdLo, Double thresholdHi, int winLength)
 	{
 		int i = indexBegin;
 		while(indexEnd-i>=winLength-1)
@@ -176,11 +175,11 @@ public class CSVController {
 		return -1;
 	}
 	
-	public static boolean checkData(ArrayList<ArrayList<Double>> data, int indexBegin, int indexEnd, ArrayList<Double> thresholdLo, ArrayList<Double> thresholdHi, int winLength, int curr)
+	public static boolean checkData(ArrayList<ArrayList<Double>> data, int indexBegin, int indexEnd, ArrayList<Double> thresholdLo, Double thresholdHi, int winLength, int curr)
 	{
 		for(int i = 0; i<data.size(); i++)
 		{
-			if(data.get(i).get(curr)<thresholdLo.get(i) || data.get(i).get(curr)>thresholdHi.get(i))
+			if(data.get(i).get(curr)<thresholdLo.get(i) || data.get(i).get(curr)>thresholdHi)
 			{
 				return false;
 			}
