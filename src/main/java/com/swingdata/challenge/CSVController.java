@@ -187,26 +187,4 @@ public class CSVController {
 		}
 		return true;
 	}
-	
-	public static int searchHelperWithTwo(ArrayList<Double> data1, ArrayList<Double> data2, int indexBegin, int indexEnd, double threshold1, double threshold2, int winLength)
-	{
-		int i = indexBegin;
-		while(indexEnd-i>=winLength-1)
-		{
-			int j = i;
-			int count = 0;
-			while(data1.get(j)>threshold1 && data2.get(j)>threshold2 && count<winLength)
-			{
-				count++;
-				j++;
-			}
-			if(count==winLength)
-			{
-				return i;
-			}
-			i++;
-		}
-		return -1;
-	}
-	
 }
