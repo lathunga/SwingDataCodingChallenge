@@ -24,23 +24,23 @@ public class SwingData {
     public SwingData() {
     }
     
-    public ArrayList<Double> getCol(int col)
+    public ArrayList<Double> getCol(String col)
     {
     	switch(col)
     	{
-    		case 1:
+    		case "timestamp":
     			return timestamp;
-    		case 2:
+    		case "ax":
     			return ax;
-    		case 3:
+    		case "ay":
     			return ay;
-    		case 4:
+    		case "az":
     			return az;
-    		case 5:
+    		case "wx":
     			return wx;
-    		case 6:
+    		case "wy":
     			return wy;
-    		case 7:
+    		case "wz":
     			return wz;
     	}
     	return null;

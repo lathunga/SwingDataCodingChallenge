@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,7 +60,7 @@ public class CSVController {
 		{
 			return "errorData";
 		}
-		int result = searchContinuityAboveValue(swingD.getCol(Integer.parseInt(data)), indexBegin, indexEnd, Double.parseDouble(threshold), winLength);
+		int result = searchContinuityAboveValue(swingD.getCol(data), indexBegin, indexEnd, Double.parseDouble(threshold), winLength);
 		model.addAttribute("result", result);
 		return "result";
 	}
@@ -70,7 +71,7 @@ public class CSVController {
 		{
 			return "errorData";
 		}
-		int result = backSearchContinuityWithinRange(swingD.getCol(Integer.parseInt(data)), indexBegin, indexEnd, Double.parseDouble(thresholdLo),Double.parseDouble(thresholdHi),  winLength);
+		int result = backSearchContinuityWithinRange(swingD.getCol(data), indexBegin, indexEnd, Double.parseDouble(thresholdLo),Double.parseDouble(thresholdHi),  winLength);
 		model.addAttribute("result", result);
 		return "result";
 	}
@@ -81,7 +82,7 @@ public class CSVController {
 		{
 			return "errorData";
 		}
-		int result = searchContinuityAboveValueTwoSignals(swingD.getCol(Integer.parseInt(data1)), swingD.getCol(Integer.parseInt(data2)), indexBegin, indexEnd, Double.parseDouble(threshold1), Double.parseDouble(threshold2),  winLength);
+		int result = searchContinuityAboveValueTwoSignals(swingD.getCol(data1), swingD.getCol(data2), indexBegin, indexEnd, Double.parseDouble(threshold1), Double.parseDouble(threshold2),  winLength);
 		model.addAttribute("result", result);
 		return "result";
 	}
@@ -92,7 +93,7 @@ public class CSVController {
 		{
 			return "errorData";
 		}
-		ArrayList<int[]> result = searchMultiContinuityWithinRange(swingD.getCol(Integer.parseInt(data)), indexBegin, indexEnd, Double.parseDouble(thresholdLo),Double.parseDouble(thresholdHi),  winLength);
+		ArrayList<int[]> result = searchMultiContinuityWithinRange(swingD.getCol(data), indexBegin, indexEnd, Double.parseDouble(thresholdLo),Double.parseDouble(thresholdHi),  winLength);
 		model.addAttribute("result", result);
 		return "result2";
 	}
@@ -183,9 +184,43 @@ public class CSVController {
 				int[] newIndexes = {i, j-1};
 				indexes.add(newIndexes);
 			}
-			i++;
+			i = j+1;
 		}
 		return indexes;
+	}
+	
+	public static int searchHelper(ArrayList<ArrayList<Double>> data, int indexBegin, int indexEnd, double[] thresholdLo, double thresholdHi, int winLength)
+	{
+		for(int i = indexBegin; indexEnd-i>=winLength-1; i++)
+		{
+			boolean check = true;
+			int k;
+			for(k = i; check; k++)
+			{
+				int j;
+				for(j = 0; j<data.size(); j++)
+				{
+					if(!(data.get(j).get(i)>thresholdLo[j]) || !(data.get(j).get(i)<thresholdHi))
+					{
+						break;
+					}
+				}
+				if(j!=data.size())
+				{
+					check=false;
+					k++;
+				}
+				else
+				{
+					if(k+1-i==winLength)
+					{
+						return i;
+					}
+				}
+			}	
+			i=k;
+		}
+		return -1;
 	}
 	
 }
